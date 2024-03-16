@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApiService", "BankApiService\BankApiService.csproj", "{FE45C911-5253-429F-BEC0-B2A18855375A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCsv", "TestCsv\TestCsv.csproj", "{A8685068-0F35-45F4-895C-060679A6C150}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE45C911-5253-429F-BEC0-B2A18855375A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE45C911-5253-429F-BEC0-B2A18855375A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE45C911-5253-429F-BEC0-B2A18855375A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE45C911-5253-429F-BEC0-B2A18855375A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8685068-0F35-45F4-895C-060679A6C150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8685068-0F35-45F4-895C-060679A6C150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8685068-0F35-45F4-895C-060679A6C150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8685068-0F35-45F4-895C-060679A6C150}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64BF3C34-CF9C-4AA2-8963-C27147C774ED}
+	EndGlobalSection
+EndGlobal
