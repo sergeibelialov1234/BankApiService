@@ -1,4 +1,5 @@
 using System;
+using BankApiService.Controllers;
 
 namespace BankApiService
 {
@@ -12,7 +13,17 @@ namespace BankApiService
 
             builder.Services.AddControllers();
 
+                        builder.Services.AddEndpointsApiExplorer();
+
+                        builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
+
+                        if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 
             // Configure the HTTP request pipeline.
 
@@ -22,6 +33,7 @@ namespace BankApiService
 
 
             app.MapControllers();
+
 
             app.Run();
         }
