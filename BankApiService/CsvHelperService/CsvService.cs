@@ -54,5 +54,20 @@ namespace BankApiService.CsvHelperService
             
             return new Account() { Id = -1 };
         }
+
+        public static void DeleteAccount(int id)
+        {
+            // Получить все аккаунты
+            var allAccounts = ReadFromCsv();
+
+            // Удалить аккаунт с указанным id из списка всех аккаунтов
+
+            var accountToDelete = allAccounts.FirstOrDefault(acc => acc.Id == id);
+
+            allAccounts.Remove(accountToDelete);
+
+            // Записать обновленный список аккаунтов в файл
+            WriteToCsv(allAccounts);
+        }
     }
 }
