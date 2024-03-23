@@ -1,4 +1,6 @@
-﻿namespace BankApiService.Models
+﻿using BankApiService.Enums;
+
+namespace BankApiService.Models
 {
     public class Transaction
     {
@@ -8,5 +10,6 @@
         public int Account { get; set; }
         public int OldBalance { get; set; }
         public int NewBalance { get; set; }
+        public TransactionType TrasactionType { get; set; }
     }
 }

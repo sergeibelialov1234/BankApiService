@@ -1,4 +1,5 @@
-﻿using BankApiService.Models;
+﻿using BankApiService.Controllers;
+using BankApiService.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
 using System;
@@ -67,7 +68,43 @@ namespace BankApiService.CsvHelperService
             allAccounts.Remove(accountToDelete);
 
             // Записать обновленный список аккаунтов в файл
-            WriteToCsv(allAccounts);
+            OverwriteAccountsToCsv(allAccounts);
+        }
+
+        public static void OverwriteAccountsToCsv(List<Account> accounts)
+        {
+            // Append to the file.
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                // Don't write the header again.
+                HasHeaderRecord = true,
+            };
+
+            using (var stream = File.Open("accounts.csv", FileMode.Create))
+            using (var writer = new StreamWriter(stream))
+            using (var csv = new CsvWriter(writer, config))
+            {
+                csv.WriteRecords(accounts);
+            }
+        }
+
+        public static void UpdateAccountInformation(Account accountToUpdate)
+        {
+            // Получить все аккаунты
+            var allAccounts = ReadFromCsv();
+
+            // Найти аккаунт с указанным id
+            var account = allAccounts.FirstOrDefault(acc => acc.Id == accountToUpdate.Id);
+
+            // Удалить аккаунт с указанным id из списка всех аккаунтов
+
+            allAccounts.Remove(account);
+
+            // Добавить обновленный аккаунт в список всех аккаунтов
+            allAccounts.Add(accountToUpdate);
+
+            // Записать обновленный список аккаунтов в файл
+            OverwriteAccountsToCsv(allAccounts);
         }
     }
 }

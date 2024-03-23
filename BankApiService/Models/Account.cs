@@ -1,5 +1,3 @@
-﻿using Newtonsoft.Json;
-
 ﻿namespace BankApiService.Models
 {
     public class Account
