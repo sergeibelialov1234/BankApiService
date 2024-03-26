@@ -1,24 +1,22 @@
-﻿using BankApiService.Controllers;
-using BankApiService.Models;
+﻿using BankApiService.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
-using System;
 using System.Globalization;
 
 namespace BankApiService.CsvHelperService
 {
-    public static class CsvService
+    public static class CsvService<T> where T : EntityBase, new()
     {
-        public static void WriteToCsv(List<Account> listToWrite)
+        public static void WriteToCsv(List<T> listToWrite, string fileName)
         {
             // Append to the file.
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 // Don't write the header again.
-                HasHeaderRecord = !File.Exists("accounts.csv"),
+                HasHeaderRecord = !File.Exists(fileName),
             };
 
-            using (var stream = File.Open("accounts.csv", FileMode.Append))
+            using (var stream = File.Open(fileName, FileMode.Append))
             using (var writer = new StreamWriter(stream))
             using (var csv = new CsvWriter(writer, config))
             {
@@ -26,26 +24,26 @@ namespace BankApiService.CsvHelperService
             }
         }
 
-        public static List<Account> ReadFromCsv()
+        public static List<T> ReadFromCsv(string fileName)
         {
-            if (!File.Exists("accounts.csv"))
+            if (!File.Exists(fileName))
             {
-                return new List<Account>();
+                return new List<T>();
             }
 
-            using (var reader = new StreamReader("accounts.csv"))
+            using (var reader = new StreamReader(fileName))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 // Read all records and return as a list of Person objects
-                return csv.GetRecords<Account>().ToList();
+                return csv.GetRecords<T>().ToList();
             }
         }
 
-        public static Account GetAccountById(int id)
+        public static T GetEntityById(int id, string fileName)
         {
-            var allAccounts = ReadFromCsv();
+            var list = ReadFromCsv(fileName);
 
-            foreach (var account in allAccounts)
+            foreach (var account in list)
             {
                 if (account.Id == id)
                 {
@@ -53,25 +51,25 @@ namespace BankApiService.CsvHelperService
                 }
             }
             
-            return new Account() { Id = -1 };
+            return new T() { Id = -1 };
         }
 
-        public static void DeleteAccount(int id)
+        public static void DeleteEntity(int id, string fileName)
         {
             // Получить все аккаунты
-            var allAccounts = ReadFromCsv();
+            var list = ReadFromCsv(fileName);
 
             // Удалить аккаунт с указанным id из списка всех аккаунтов
 
-            var accountToDelete = allAccounts.FirstOrDefault(acc => acc.Id == id);
+            var entityToDelete = list.FirstOrDefault(acc => acc.Id == id);
 
-            allAccounts.Remove(accountToDelete);
+            list.Remove(entityToDelete);
 
             // Записать обновленный список аккаунтов в файл
-            OverwriteAccountsToCsv(allAccounts);
+            OverwriteAccountsToCsv(list, fileName);
         }
 
-        public static void OverwriteAccountsToCsv(List<Account> accounts)
+        public static void OverwriteAccountsToCsv(List<T> entites, string fileName)
         {
             // Append to the file.
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -80,31 +78,31 @@ namespace BankApiService.CsvHelperService
                 HasHeaderRecord = true,
             };
 
-            using (var stream = File.Open("accounts.csv", FileMode.Create))
+            using (var stream = File.Open(fileName, FileMode.Create))
             using (var writer = new StreamWriter(stream))
             using (var csv = new CsvWriter(writer, config))
             {
-                csv.WriteRecords(accounts);
+                csv.WriteRecords(entites);
             }
         }
 
-        public static void UpdateAccountInformation(Account accountToUpdate)
+        public static void UpdateEntityInformation(T entityToUpdate, string fileName)
         {
             // Получить все аккаунты
-            var allAccounts = ReadFromCsv();
+            var list = ReadFromCsv(fileName);
 
             // Найти аккаунт с указанным id
-            var account = allAccounts.FirstOrDefault(acc => acc.Id == accountToUpdate.Id);
+            var account = list.FirstOrDefault(acc => acc.Id == entityToUpdate.Id);
 
             // Удалить аккаунт с указанным id из списка всех аккаунтов
 
-            allAccounts.Remove(account);
+            list.Remove(account);
 
             // Добавить обновленный аккаунт в список всех аккаунтов
-            allAccounts.Add(accountToUpdate);
+            list.Add(entityToUpdate);
 
             // Записать обновленный список аккаунтов в файл
-            OverwriteAccountsToCsv(allAccounts);
+            OverwriteAccountsToCsv(list, fileName);
         }
     }
 }

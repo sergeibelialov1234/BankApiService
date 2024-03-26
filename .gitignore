@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /BankApiService/accounts.csv
 /BankApiService/id.txt
+/BankApiService/transaction.csv
+*.csv
+*.txt
