@@ -9,13 +9,22 @@ namespace BankApiService
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var env = builder.Environment.EnvironmentName;
+
+            builder.Configuration
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
             // Add services to the container.
+
+            var configuration = builder.Configuration;
 
             builder.Services.AddControllers();
 
-                        builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddEndpointsApiExplorer();
 
-                        builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();
             // Add Cors
             builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
@@ -26,11 +35,11 @@ namespace BankApiService
 
             var app = builder.Build();
 
-                        if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-};
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            };
 
             // Configure the HTTP request pipeline.
 

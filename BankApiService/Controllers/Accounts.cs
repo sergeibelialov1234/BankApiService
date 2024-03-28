@@ -4,7 +4,7 @@ using BankApiService.IdService;
 using BankApiService.Models;
 using BankApiService.Requests;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
+using Transaction = BankApiService.Models.Transaction;
 
 namespace BankApiService.Controllers
 {
@@ -12,17 +12,27 @@ namespace BankApiService.Controllers
     [ApiController]
     public class Accounts : ControllerBase
     {
+        IConfiguration _configuration;
 
-        private const string _accountFileName = "accounts.csv";
+        public Accounts(IConfiguration configuration) 
+        {
+            _configuration = configuration;
+            _accountFileName = _configuration["_accountFileName"];
+        }
+
+        private readonly string _accountFileName;
         private const string _transactionFileName = "transactions.csv";
+        private const string _accountIdFileName = "id.txt";
+        private const string _transactionIdFileName = "t_id.txt";
 
         [HttpGet]
         public ActionResult<List<Account>> GetAccounts()
         {
+
             try
             {
                 var accountList = CsvService<Account>.ReadFromCsv(_accountFileName);
-       
+
                 foreach (var account in accountList)
                 {
                     account.Transactions = TransactionService.GetTransactionsById(account.Id, _transactionFileName);
@@ -59,7 +69,7 @@ namespace BankApiService.Controllers
             var account = new Account();
 
             account.Number = random.Next(100, 99999);
-            var nextId = IdHelper.GetNextId();
+            var nextId = IdHelper.GetNextId(_accountIdFileName);
             account.Owner = accountRequest.Owner;
             account.Id = nextId;
 
@@ -96,7 +106,7 @@ namespace BankApiService.Controllers
 
             var transaction = new Transaction
             {
-                Id = IdHelper.GetNextTransactionId(),
+                Id = IdHelper.GetNextId(_transactionIdFileName),
                 Amount = depositRequest.Amount,
                 Date = DateTime.Now,
                 TrasactionType = TransactionType.Deposit,
@@ -131,7 +141,7 @@ namespace BankApiService.Controllers
 
             var transaction = new Transaction
             {
-                Id = IdHelper.GetNextTransactionId(),
+                Id = IdHelper.GetNextId(_transactionIdFileName),
                 Amount = depositRequest.Amount,
                 Date = DateTime.Now,
                 TrasactionType = TransactionType.Withdraw,
@@ -171,6 +181,66 @@ namespace BankApiService.Controllers
             CsvService<Account>.UpdateEntityInformation(account, _accountFileName);
 
             return Accepted();
+        }
+
+        [HttpPost("transfer")]
+        public ActionResult Transfer(TransferRequest request)
+        {
+            var fromAccount = CsvService<Account>.GetEntityById(request.FromId, _accountFileName);
+            var toAccount = CsvService<Account>.GetEntityById(request.ToId, _accountFileName);
+
+            if(fromAccount.Id == -1 || toAccount.Id == -1)
+            {
+                return BadRequest("One of the accounts not found.");
+            }
+
+            fromAccount.Balance -= request.Amount;
+            toAccount.Balance += request.Amount;
+
+            fromAccount.Transactions = TransactionService.GetTransactionsById(fromAccount.Id, _transactionFileName);
+            toAccount.Transactions = TransactionService.GetTransactionsById(toAccount.Id, _transactionFileName);
+
+            var transationFrom = new Transaction
+            {
+                Id = IdHelper.GetNextId(_transactionIdFileName),
+                Amount = request.Amount,
+                Date = DateTime.Now,
+                TrasactionType = TransactionType.Transfer,
+                AccountId = fromAccount.Id,
+                OldBalance = fromAccount.Balance + request.Amount,
+                NewBalance = fromAccount.Balance
+            };
+
+            var transationTo = new Transaction
+            {
+                Id = IdHelper.GetNextId(_transactionIdFileName),
+                Amount = request.Amount,
+                Date = DateTime.Now,
+                TrasactionType = TransactionType.Transfer,
+                AccountId = toAccount.Id,
+                OldBalance = toAccount.Balance - request.Amount,
+                NewBalance = toAccount.Balance
+            };
+
+            toAccount.Transactions.Add(transationTo);
+            fromAccount.Transactions.Add(transationFrom);
+
+            CsvService<Account>.UpdateEntityInformation(toAccount, _accountFileName);
+            CsvService<Transaction>.WriteToCsv(new List<Transaction>() { transationTo }, _transactionFileName);
+
+            CsvService<Account>.UpdateEntityInformation(fromAccount, _accountFileName);
+            CsvService<Transaction>.WriteToCsv(new List<Transaction>() { transationFrom }, _transactionFileName);
+
+            return Ok(fromAccount);
+        }
+
+        [HttpGet("ping")]
+        public ActionResult Ping()
+        {
+            var punginfor = _configuration.GetSection("Version:Major:T3est:asdasd:").Get<PingInformation>();
+
+
+            return Ok(punginfor);
         }
     }
 }
