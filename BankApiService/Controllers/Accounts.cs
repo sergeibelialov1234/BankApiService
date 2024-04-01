@@ -16,11 +16,10 @@ namespace BankApiService.Controllers
 
         public Accounts(IConfiguration configuration) 
         {
-            _configuration = configuration;
-            _accountFileName = _configuration["_accountFileName"];
+
         }
 
-        private readonly string _accountFileName;
+        private const string _accountFileName = "accounts.csv";
         private const string _transactionFileName = "transactions.csv";
         private const string _accountIdFileName = "id.txt";
         private const string _transactionIdFileName = "t_id.txt";
