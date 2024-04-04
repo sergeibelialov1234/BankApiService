@@ -5,9 +5,9 @@ using System.Globalization;
 
 namespace BankApiService.CsvHelperService
 {
-    public static class CsvService<T> where T : EntityBase, new()
+    public class CsvService<T>  where T : EntityBase, new()
     {
-        public static void WriteToCsv(List<T> listToWrite, string fileName)
+        public void WriteToCsv(List<T> listToWrite, string fileName)
         {
             // Append to the file.
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -24,7 +24,7 @@ namespace BankApiService.CsvHelperService
             }
         }
 
-        public static List<T> ReadFromCsv(string fileName)
+        public List<T> ReadFromCsv(string fileName)
         {
             if (!File.Exists(fileName))
             {
@@ -39,7 +39,7 @@ namespace BankApiService.CsvHelperService
             }
         }
 
-        public static T GetEntityById(int id, string fileName)
+        public T GetEntityById(int id, string fileName)
         {
             var list = ReadFromCsv(fileName);
 
@@ -54,7 +54,7 @@ namespace BankApiService.CsvHelperService
             return new T() { Id = -1 };
         }
 
-        public static void DeleteEntity(int id, string fileName)
+        public void DeleteEntity(int id, string fileName)
         {
             // Получить все аккаунты
             var list = ReadFromCsv(fileName);
@@ -69,7 +69,7 @@ namespace BankApiService.CsvHelperService
             OverwriteAccountsToCsv(list, fileName);
         }
 
-        public static void OverwriteAccountsToCsv(List<T> entites, string fileName)
+        public void OverwriteAccountsToCsv(List<T> entites, string fileName)
         {
             // Append to the file.
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -86,7 +86,7 @@ namespace BankApiService.CsvHelperService
             }
         }
 
-        public static void UpdateEntityInformation(T entityToUpdate, string fileName)
+        public void UpdateEntityInformation(T entityToUpdate, string fileName)
         {
             // Получить все аккаунты
             var list = ReadFromCsv(fileName);

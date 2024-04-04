@@ -1,5 +1,9 @@
 using System;
 using BankApiService.Controllers;
+using BankApiService.CsvHelperService;
+using BankApiService.Dependcies;
+using BankApiService.Dependcies.LifeCycle;
+using BankApiService.Models;
 
 namespace BankApiService
 {
@@ -21,6 +25,20 @@ namespace BankApiService
             var configuration = builder.Configuration;
 
             builder.Services.AddControllers();
+
+
+            // DI
+            builder.Services.AddSingleton<CsvService<Account>>();
+            builder.Services.AddSingleton<CsvService<Transaction>>();
+
+
+            
+
+            builder.Services.AddTransient<RequestService>();
+            builder.Services.AddSingleton<SingletonDep>();
+            builder.Services.AddTransient<TransientDep>();
+            builder.Services.AddScoped<ScopedDep>();
+
 
             builder.Services.AddEndpointsApiExplorer();
 
