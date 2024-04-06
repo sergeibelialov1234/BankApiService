@@ -366,3 +366,6 @@ FodyWeavers.xsd
 /BankApiService/transaction.csv
 *.csv
 *.txt
+/BankApiService/mydatabase.db
+/BankApiService/mydatabase.db-shm
+/BankApiService/mydatabase.db-wal

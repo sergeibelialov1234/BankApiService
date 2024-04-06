@@ -5,6 +5,7 @@ using BankApiService.Enums;
 using BankApiService.IdService;
 using BankApiService.Models;
 using BankApiService.Requests;
+using BankApiService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Transaction = BankApiService.Models.Transaction;
 
@@ -18,15 +19,20 @@ namespace BankApiService.Controllers
         private readonly CsvService<Transaction> csvTransactionService;
         private readonly ILogger<Accounts> _logger;
 
+        // DB Sqlite
+        private readonly IAccountsService _accountsService;
+
 
         public Accounts(
             CsvService<Account> csvService,
             CsvService<Transaction> csvService1,
-            ILogger<Accounts> logger)
+            ILogger<Accounts> logger,
+            IAccountsService accountsService)
         {
             csvAccountService = csvService;
             csvTransactionService = csvService1;
             _logger = logger;
+            _accountsService = accountsService;
         }
 
         private const string _accountFileName = "accounts.csv";
@@ -49,15 +55,9 @@ namespace BankApiService.Controllers
 
             try
             {
-                var accountList = csvAccountService.ReadFromCsv(_accountFileName);
+                var accountsList = _accountsService.GetAccounts();
 
-                foreach (var account in accountList)
-                {
-                    account.Transactions = TransactionService.GetTransactionsById(account.Id, _transactionFileName);
-                }
-
-                _logger.LogError("Successfully got all accounts.");
-                return Ok(accountList);
+                return Ok(accountsList);
             }
             catch (Exception ex)
             {
@@ -69,9 +69,8 @@ namespace BankApiService.Controllers
         [HttpGet("{id}")]
         public ActionResult<Account> GetAccountById([FromRoute] int id)
         {
-            var account = csvAccountService.GetEntityById(id, _accountFileName);
-
-            if (account.Id == -1)
+            var account = _accountsService.GetAccountById(id);
+            if (account == null)
             {
                 return BadRequest($"Account with ID: {id} not found.");
             }
@@ -89,16 +88,11 @@ namespace BankApiService.Controllers
             var account = new Account();
 
             account.Number = random.Next(100, 99999);
-            var nextId = IdHelper.GetNextId(_accountIdFileName);
             account.Owner = accountRequest.Owner;
-            account.Id = nextId;
-
-            var listAccounts = new List<Account>();
-            listAccounts.Add(account);
 
             try
             {
-                csvAccountService.WriteToCsv(listAccounts, _accountFileName);
+                _accountsService.AddAccount(account);
             }
             catch (Exception ex)
             {
