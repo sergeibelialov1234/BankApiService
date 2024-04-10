@@ -1,13 +1,5 @@
-using System;
-using System.Configuration;
 using BankApiService.Context;
-using BankApiService.Controllers;
-using BankApiService.CsvHelperService;
-using BankApiService.Dependcies;
-using BankApiService.Dependcies.LifeCycle;
-using BankApiService.Models;
 using BankApiService.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace BankApiService
 {
@@ -41,14 +33,7 @@ namespace BankApiService
 
             // DI
             builder.Services.AddSingleton<IAccountsService, AccountsService>();
-            builder.Services.AddSingleton<CsvService<Account>>();
-            builder.Services.AddSingleton<CsvService<Transaction>>();
-
-
-            
-
-    
-
+            builder.Services.AddSingleton<ITransactionService, TransactionService>();
 
             builder.Services.AddEndpointsApiExplorer();
 
