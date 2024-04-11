@@ -7,7 +7,7 @@ namespace BankApiService.Services
 {
     public interface IAccountsService
     {
-        public void AddAccount(Account account);
+        public Account CreateAccount(string accountOwner);
         public OperationResult UpdateOwnerName(int id, string ownerName);
         public OperationResult DeleteAccount(int id);
         public Account GetAccountById(int id);
@@ -18,16 +18,24 @@ namespace BankApiService.Services
     public class AccountsService : IAccountsService
     {
         private readonly BankContext _context;
+        private readonly Random random = new Random();
 
         public AccountsService(BankContext context)
         {
             _context = context;
         }
 
-        public void AddAccount(Account account)
+        public Account CreateAccount(string accountOwner)
         {
+            var account = new Account();
+
+            account.Number = random.Next(100, 99999);
+            account.Owner = accountOwner;
+
             _context.Accounts.Add(account);
             _context.SaveChanges();
+
+            return account;
         }
 
         public OperationResult DeleteAccount(int id)

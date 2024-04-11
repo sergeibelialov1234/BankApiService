@@ -35,6 +35,10 @@ namespace BankApiService.Controllers
         }   
 
 
+        /// <summary>
+        /// Возвращает список всех счетов
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<List<Account>> GetAccounts()
         {
@@ -53,7 +57,12 @@ namespace BankApiService.Controllers
             }
         }
 
+
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<Account> GetAccountById([FromRoute] int id)
         {
             var account = _accountsService.GetAccountById(id);
@@ -65,19 +74,32 @@ namespace BankApiService.Controllers
             return Ok(account);
         }
 
+        /// <summary>
+        /// Создание нового счета
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /accounts
+        ///     {
+        ///        "owner": "Mike"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <param name="accountRequest"></param>
+        /// <returns></returns>
+        /// <response code="200">Возвращает новый аккаунт</response>
+        /// <response code="400">Ничего не созадет.</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public ActionResult<Account> CreateAccout([FromBody] CreateAccountRequest accountRequest)
         {
-            var random = new Random();
-
-            var account = new Account();
-
-            account.Number = random.Next(100, 99999);
-            account.Owner = accountRequest.Owner;
+            Account account;
 
             try
             {
-                _accountsService.AddAccount(account);
+               account = _accountsService.CreateAccount(accountRequest.Owner);
             }
             catch (Exception ex)
             {

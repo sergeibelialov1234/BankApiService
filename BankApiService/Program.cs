@@ -1,5 +1,6 @@
 using BankApiService.Context;
 using BankApiService.Services;
+using System.Reflection;
 
 namespace BankApiService
 {
@@ -37,7 +38,14 @@ namespace BankApiService
 
             builder.Services.AddEndpointsApiExplorer();
 
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new() { Title = "BankApiService", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             // Add Cors
             builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
@@ -48,11 +56,11 @@ namespace BankApiService
 
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            };
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BankApiService API v1");
+            });
 
             // Configure the HTTP request pipeline.
 
