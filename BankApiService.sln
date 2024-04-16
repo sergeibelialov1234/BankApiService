@@ -5,7 +5,9 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankApiService", "BankApiService\BankApiService.csproj", "{FE45C911-5253-429F-BEC0-B2A18855375A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCsv", "TestCsv\TestCsv.csproj", "{A8685068-0F35-45F4-895C-060679A6C150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCsv", "TestCsv\TestCsv.csproj", "{A8685068-0F35-45F4-895C-060679A6C150}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{C6039095-B918-43FE-989F-509C334594C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A8685068-0F35-45F4-895C-060679A6C150}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8685068-0F35-45F4-895C-060679A6C150}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8685068-0F35-45F4-895C-060679A6C150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6039095-B918-43FE-989F-509C334594C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6039095-B918-43FE-989F-509C334594C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6039095-B918-43FE-989F-509C334594C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6039095-B918-43FE-989F-509C334594C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
